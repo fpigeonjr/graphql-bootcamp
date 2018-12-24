@@ -4,31 +4,61 @@ import { GraphQLServer } from "graphql-yoga";
 
 const typeDefs = `
   type Query {
+    me: User!
+    latestPost: Post!
+    greeting(name: String, position: String): String!
+    add(a: Float!, b: Float!): Float!
+  }
+
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    age: Int
+  }
+
+  type Post {
+    id: ID!
     title: String!
-    price: Float!
-    releaseYear: Int
-    rating: Float
-    inStock: Boolean!
+    body: String!
+    published: Boolean
   }
 `;
 
 // resolvers
 const resolvers = {
   Query: {
-    title() {
-      return "My Awesome Title";
+    add(parent, args, ctx, position) {
+      if (args.a && args.b) {
+        const sum = args.a + args.b;
+        return `The sum of ${args.a} and ${args.b} equals`, sum;
+      } else {
+        return "nope";
+      }
     },
-    price() {
-      return 5.99;
+    greeting(parent, args, ctx, info) {
+      if (args.name && args.position) {
+        return `Hello ${args.name}! You are my favorite ${args.position}`;
+      } else {
+        return "Hello ";
+      }
     },
-    releaseYear() {
-      return 1987;
+    me() {
+      return {
+        id: "123abc",
+        name: "Frank Pigeon Jr.",
+        email: "frank.pigeonjr@gmail.com",
+        age: 40
+      };
     },
-    rating() {
-      return 4.97;
-    },
-    inStock() {
-      return true;
+
+    latestPost() {
+      return {
+        id: "my-latest-post",
+        title: "My Latest Post",
+        body: `lorem ipsasdhaisud asodihaosdih asoidoaishdoaisd asodihasd the hot for each loop random javaScript is the new React PHP.`,
+        published: true
+      };
     }
   }
 };
