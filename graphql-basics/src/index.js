@@ -7,7 +7,8 @@ const typeDefs = `
     me: User!
     latestPost: Post!
     greeting(name: String, position: String): String!
-    add(a: Float!, b: Float!): Float!
+    add(Numbers: [Float!]): Float!
+    grades: [Int!]!
   }
 
   type User {
@@ -29,16 +30,22 @@ const typeDefs = `
 const resolvers = {
   Query: {
     add(parent, args, ctx, position) {
-      if (args.a && args.b) {
-        const sum = args.a + args.b;
-        return `The sum of ${args.a} and ${args.b} equals`, sum;
-      } else {
-        return "nope";
+      if (args.Numbers.length === 0) {
+        return 0;
       }
+
+      return args.Numbers.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue;
+      });
+    },
+    grades(parent, args, ctx, position) {
+      return [99, 80, 93];
     },
     greeting(parent, args, ctx, info) {
       if (args.name && args.position) {
-        return `Hello ${args.name}! You are my favorite ${args.position}`;
+        return `Hello ${args.name}. You are my favorite ${args.position}!`;
+      } else if (args.name) {
+        return `Hello ${args.name}, you are awesome!`;
       } else {
         return "Hello ";
       }
